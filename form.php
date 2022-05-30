@@ -1,108 +1,82 @@
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Ex4</title>
-    <link rel="stylesheet" href="Style.css">
-    <style>
-      .error {
-        border: 5px solid black;
-        background-color: red;
-        color: white;
-        border-radius: 7px;
-        margin: 10px 5px;
-        padding: 10px;
-        max-width: 350px;
-        align: "center";
-      }
-    </style>
-  </head>
-  <body>
-    <?php
-      if (!empty($messages)) {
-        print('<div id="messages">');
-        //   Выводим все сообщения.
-        foreach ($messages as $message) {
-          print($message);
-        }
-        print('</div>');
-      }
-      // Далее выводим форму отмечая элементы с ошибками классом error
-      // и задавая начальные значения элементов ранее сохраненными.
-    ?>
-    <style>
-      .form_class {
-	      border: 3px solid black;
-	      border-radius: 5px;
-	      background-color: yellowgreen;
-      }
-    </style>
-    <div class="form_class">
-  <div >
-  <form action="index.php" method = "POST" >
-	<div> Имя: </div>
-  <label>
-  <input  type="text" name="uName" placeholder="Ваше имя" autocomplete="off">
-  </label>
-	<br/>	
-	<div> Email: </div>	
+<html lang="en">
+<head>
+  <meta charset='utf-8'/>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<?php $sessionStarted = !empty($_COOKIE[session_name()]) &&
+      !empty($_SESSION['login']); ?>
+<a href="./login.php"> 
+<?php if($sessionStarted) print('Выход,Сессия Закнчивается?:(');
+		else print('Вход,Привет!Сессия Начата!');
+?>
+ </a>
+<div class="form-wrapper">
+<div class="form-layer">
+
+<h1 class ="titles" id="linktitle"> Form </h1>
+  <form action ="" method = "POST">
 	<label>
-    <input  type="text" name="uMail" placeholder="E-mail" autocomplete="off">
-  </label><br/>
-	<div> Дата рождения: </div>
-  <label>
-    <input  type="date" name="uDate" autocomplete="off">
-  </label>
-	<br/>
-  <div> Пол: </div>
-	<div >
-    <input type="radio" value="1" name="uGen" id="uMale" checked="checked">
-    <label for="uMale"> Мужской </label>
-  </div>
-  <div>
-  	<input type="radio" value="2" name="uGen" id="uFemale">
-  	<label  for="uFemale"> Женский: </label>
-  </div>
-	<div> Кол-во конечностей: </div>
-	<div >
-		<input type="radio" value="1" name="uLim" id="uNorm" checked="checked">
-    <label  for="userHealthy"> 2 ноги и 2 руки </label>
-  </div>
-  <div >
-    <input  type="radio" value="2" name="uLim" id="uLess">
-    <label  for="userDisabled">Чего-то не хватает </label>
-	</div>
-	</div>
-    <input  type="radio" value="3" name="uLim" id="uMore">
-    <label for="uMore"> Больше чем нужно:)</label>
-    <div>Ваша биография:</div>
-    <label>
-  	<textarea name="uBio" placeholder="Ваша биография" autocomplete="off"></textarea>
-    </label>
+			Имя:<br />
+			<input name="field-name-1" <?php if($errors['name']) print('class="error"');?> value="<?php print($values['name'])?>" /> <?php if($errors['name']) print($messages['bad_name']) ?>
+		  </label><br />
+	<label>
+			Email:<br />
+			<input name="field-email" type="email" <?php if($errors['email']) print('class="error"');?> value="<?php print($values['email'])?>" /> <?php if($errors['email']) print($messages['bad_email']) ?>
+		  </label><br />
+	<label>
+			Дата Рождения:<br />
+			<input name="field-date" 
+			  type="date" <?php if($errors['birth_date']) print('class="error"');?> value="<?php print($values['birth_date'])?>" /> <?php if($errors['birth_date']) print($messages['bad_date']) ?> 
+		  </label><br />
+	Пол: <label><input type="radio" <?php if($values['sex'] === 'male') print('checked="checked"');?>
+			name="radio-group-1" value = "male" />
+			Мужской </label>
+		  <label><input type="radio" <?php if($values['sex'] === 'female') print('checked="checked"');?>
+			name="radio-group-1" value = "female" />
+			Женский </label> <?php if($errors['sex']) print($messages['bad_sex']) ?><br />
+
+	Кол-во конеченостей: <br/> <label><input type="radio" <?php if($values['limbs'] === 1) print('checked="checked"');?>
+			name="radio-group-2" value = "1" />
+			2 ноги и 2 руки </label><br/>
+		  <label><input type="radio" <?php if($values['limbs'] === 2) print('checked="checked"');?>
+			name="radio-group-2" value = "2" />
+			Чего-то не хватает </label><br />
+			<label><input type="radio" <?php if($values['limbs'] === 3) print('checked="checked"');?>
+			name="radio-group-2" value = "3" />
+			Больше чем нужно:) </label><br />
+			<?php if($errors['limbs']) print($messages['bad_limbs']) ?>
+	<label>
+			Сверхспособности:
+			<br/>
+			<select name="field-name-4[]" <?php if($errors['super']) print('class="error"');?>
+			  multiple="multiple">
+			  <option value="immortality" <?php if(array_search('immortality',$values['super'])!==false) print('selected');?>>Бессмертие</option>
+			  <option value="walkthroughwalls" <?php if(array_search('walkthroughwalls',$values['super'])!==false) print('selected');?>>Прохождение сквозь стены</option>
+			  <option value="levitation" <?php if(array_search('levitation',$values['super'])!==false) print('selected');?>>Левитация</option>
+			</select>
+			<?php if($errors['super']) print($messages['bad_super']) ?>
+		  </label><br />
+	<label>
+	Biography: <br/>
+	  <textarea name = "bio-field" <?php if($errors['bio']) print('class="error"');?>> <?php echo($values['bio']);?> </textarea>
+	</label> <br/>
+	<?php if($errors['bio']) print($messages['bad_bio'])?>
+	<label>
+	  <input type = "checkbox" name = "checkbox" value="realslim"> С контрактом согласен! </label>
+	   <br/>
+	   <?php if($errors['check']) print($messages['bad_check'])?>
 		<br/>
-    <div> Сверхспособности: </div>
-  <label>
-    <select  multiple aria-label="multiple select" name="uPow">
-      <option value="0">Бессмертие</option>
-      <option value="1">Прохождение сквозь стены</option>
-      <option value="2">Левитация</option>
-    </select>
-  </label>
-  <div>
-    <label >
-			<input type="checkbox" id="check">С контрактом согласен!
-		</label>
-		<br/>
-	</div>
-  <div >
-    <input type="submit" id="submitButton" value="Свяжитесь с нами!">
-  </div>
-  </div>
+	  <input type="submit" value="Отправить!" />
+	  <br/>
+	  <?php print($messages['saved']);
+		print('<br/>');
+		print($messages['passmessage']); 
+	  ?>
+  </form>
 </div>
 </div>
-</form>
-</div>
-</div>
-  </body>
+</body>
 </html>
